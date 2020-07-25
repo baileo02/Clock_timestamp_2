@@ -35,6 +35,7 @@ class Database:
             self.acursor.execute('INSERT OR IGNORE INTO employee (name) VALUES ("Elaine")')
             self.acursor.execute('INSERT OR IGNORE INTO employee (name) VALUES ("Wendy")')
 
+    # Backend functions
     def get_name_by_id(self, _id):
         emp_name = self.acursor.execute('SELECT name FROM employee WHERE emp_id = ?', (_id,)).fetchone()
         if emp_name:
@@ -63,9 +64,23 @@ class Database:
         else:
             return None
 
+    def get_last_clock_in_date(self, _id):
+        latest_date = self.acursor.execute('SELECT MAX(date) FROM timestamp WHERE emp_id=?', (_id,)).fetchone()
+        return latest_date[0]
+
+    def get_num_of_emp(self):
+        return len(self.acursor.execute('SELECT name FROM employee').fetchall())
+
+    def get_all_emp(self):
+        return [emp[0] for emp in self.acursor.execute('SELECT name FROM employee').fetchall() if emp[0]]
+
+    def insert_new_employee(self, _name):
+        self.acursor.execute('INSERT INTO employee (name) VALUES (?)', (_name, ))
+        self.db.commit()
+
     def insert_time_record(self, time_type, _id: int, _date, time_value: str):
         # If record exists, raise insert error
-        record_sql = self.acursor.execute('SELECT emp_id FROM timestamp WHERE (emp_id = ? AND date = ?)',
+        record_sql = self.acursor.execute('SELECT emp_id FROM timestamp WHERE (emp_id=? AND date=?)',
                              (_id, _date)).fetchone()
 
         if record_sql:

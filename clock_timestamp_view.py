@@ -1,19 +1,13 @@
-#
+import tkinter as tk
+from tkinter import ttk
+from clock_on_page import ClockOn
 
-class View:
+class MainView:
 
-    @staticmethod
-    def show_emp_name(name):
-        print(name)
+    def __init__(self, parent):
 
-    @staticmethod
-    def show_emp_id(_id):
-        print(_id)
+        self.parent = parent
+        nb = tk.ttk.Notebook(self.parent)
+        nb.grid()
 
-    @staticmethod
-    def show_time(_time):
-        print(_time)
 
-    @staticmethod
-    def show_hours_worked(hours_worked):
-        print(hours_worked)

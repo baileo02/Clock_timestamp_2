@@ -1,34 +1,43 @@
 import clock_timestamp_model
+from clock_timestamp_model import Model
 import clock_timestamp_view
-
+from clock_timestamp_view import MainView
+import tkinter as tk
 
 class Controller:
 
-    def __init__(self, model, view):
-        self.model = model
-        self.view = view
+    def __init__(self):
+        self.root = tk.Tk()
+        self.model = Model()
+        self.view = MainView(self.root)
+        self.root.mainloop()
 
-    def display_emp_name_by_id(self, _id):
-        self.view.show_emp_name(self.model.get_name_by_id(_id))
+    # Employee Clocking in
+    def emp_clock_in(self, _id, _date):
+        self.model.create_time_record('clock_on', _id, _date, self.model.get_current_time())
 
-    def display_emp_id_by_name(self, _name):
-        self.view.show_emp_id(self.model.get_id_by_name(_name))
+    # Adding new employee to the database
+    def add_new_emp(self, name):
+        self.model.create_new_emp(name)
 
-    def display_time(self, time_type, _id, _name):
-        self.view.show_time(self.model.get_time(time_type, _id, _name))
+    # Show clock on/off times
+    def display_time(self, time_type, _id, _date):
+        return self.model.get_time(time_type, _id, _date)
 
+    # Calculate hours worked for given date and emp_id
     def display_hours_worked(self, _id, _date):
-        self.view.show_hours_worked(self.model.get_hours_worked(_id, _date))
+        print(self.model.get_hours_worked(_id, _date))
 
-    def create_time_record(self, time_type, _id, _date, time_value):
-        self.model.create_time_record(time_type, _id, _date, time_value)
+    def display_all_emp(self):
+        return self.model.get_all_emp()
 
-    def set_time_record(self, time_type, _id, _date, time_value):
+    def total_hours_worked(self, _id, dates):
+        return self.model.get_total_hours(_id, dates)
+
+    def change_clock_time(self, time_type, _id, _date, time_value):
         self.model.set_time_record(time_type, _id, _date, time_value)
 
-
 if __name__ == '__main__':
-    c = Controller(clock_timestamp_model.Model(), clock_timestamp_view.View())
 
-    # c.create_time_record('clock_on', 1, '2020-07-23', '12:00')
-    c.set_time_record('clock_off', 1, '2020-07-23', '15:00')
+    c = Controller()
+
