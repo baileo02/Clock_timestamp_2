@@ -8,6 +8,9 @@ class Controller:
 
     def __init__(self):
         self.root = tk.Tk()
+        self.root.title('Time System')
+        self.root.geometry('300x300')
+
         self.model = Model()
         self.view = MainView(self.root)
         self.root.mainloop()
@@ -36,6 +39,7 @@ class Controller:
 
     def change_clock_time(self, time_type, _id, _date, time_value):
         self.model.set_time_record(time_type, _id, _date, time_value)
+
 
 if __name__ == '__main__':
 
