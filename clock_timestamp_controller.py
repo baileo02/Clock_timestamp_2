@@ -1,6 +1,5 @@
 import clock_timestamp_model
 from clock_timestamp_model import Model
-import clock_timestamp_view
 import tkinter as tk
 from tkinter import ttk
 from clock_on_page import ClockOn
