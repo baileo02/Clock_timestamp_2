@@ -44,6 +44,7 @@ class Controller:
         # HANDLES AND REDIRECTS EVENTS FROM VIEW
         self.event_trigger()
 
+
         self.root.mainloop()
 
     def init_data(self):
@@ -57,27 +58,42 @@ class Controller:
 
     # CLOCK ON AND OFF BUTTON EVENT CALLS
     def clock_on(self, event):
-        if self.clock_on_app.employee:
-            self.clock_on_app.click_on()
-            self.model.create_time_record(self.clock_on_app.time_type, self.model.get_id_by_name(self.clock_on_app.employee),
-                                          self._cur_date, self._cur_time)
-            self.show_clock_time('clock_on', self.model.get_id_by_name(self.clock_on_app.employee), self._cur_date)
+        try:
+            if self.clock_on_app.employee:
+                self.clock_on_app.click_on()
+                self.model.create_time_record(self.clock_on_app.time_type, self.model.get_id_by_name(self.clock_on_app.employee),
+                                              self._cur_date, self._cur_time)
+                self.show_clock_time('clock_on', self.model.get_id_by_name(self.clock_on_app.employee), self._cur_date)
 
-        else:
-            raise excep.NoEmployeeSelected
+            else:
+                raise excep.NoEmployeeSelected
+        except excep.NoEmployeeSelected:
+            print('No employee is selected!')
+            print()
+        except excep.RecordAlreadyExists:
+            print('This employee has already clocked on today!')
+            print()
 
     def clock_off(self, event):
-        if self.clock_on_app.employee:
-            self.clock_on_app.click_off()
-            emp_id = self.model.get_id_by_name(self.clock_on_app.employee)
-            if not self.model.get_time(self.clock_on_app.time_type, emp_id, self._cur_date):
-                self.model.set_time_record(self.clock_on_app.time_type, emp_id,
-                                           self._cur_date, self._cur_time)
-            self.show_clock_time('clock_off', emp_id, self._cur_date)
-        else:
-            raise excep.NoEmployeeSelected
+        try:
+            if self.clock_on_app.employee:
+                self.clock_on_app.click_off()
+                emp_id = self.model.get_id_by_name(self.clock_on_app.employee)
+                # CHECK IF CLOCK OFF TIME ALREADY EXISTS.
+                if not self.model.get_time(self.clock_on_app.time_type, emp_id, self._cur_date):
+                    self.model.set_time_record(self.clock_on_app.time_type, emp_id,
+                                               self._cur_date, self._cur_time)
+                else:
+                    raise excep.AlreadyClockedOff
+                self.show_clock_time('clock_off', emp_id, self._cur_date)
+            else:
+                raise excep.NoEmployeeSelected
+        except excep.NoEmployeeSelected:
+            print('No employee is selected!')
+        except excep.AlreadyClockedOff:
+            print('Employee has already clocked off!')
 
-    # EMPLOYEE LIST EVENT CALL
+    # EMPLOYEE LIST EVENT CALL FOR WHEN AN EMPLOYEE IS SELECTED FROM THE LIST
     def emp_select(self, event):
         self.clock_on_app.on_combo_select()
         for time_type in ['clock_on', 'clock_off']:
@@ -96,11 +112,6 @@ class Controller:
                 self.clock_on_app.on_label['text'] = 'NOT CLOCKED ON'
             elif time_type == 'clock_off':
                 self.clock_on_app.off_label['text'] = 'NOT CLOCKED OFF'
-
-
-
-
-
 
 
     # def record_clock_in(self):

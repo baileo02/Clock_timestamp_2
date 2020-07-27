@@ -20,6 +20,7 @@ class Model:
     def get_current_time():
         return datetime.today().strftime('%H:%M')
 
+
     def get_name_by_id(self, _id):
         return self.db.get_name_by_id(_id)
 

@@ -7,3 +7,6 @@ class RecordNotFound(Exception):
 
 class NoEmployeeSelected(Exception):
     pass
+
+class AlreadyClockedOff(Exception):
+    pass
