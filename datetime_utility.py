@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 
 
 class TimeCalculation:
@@ -22,7 +23,24 @@ class TimeCalculation:
 
 # Converts minute overflow to hours
 def convert_min_overflow(hour_min_list: list):
-    hour_min_list[0] += (hour_min_list[1] // 60)
-    hour_min_list[1] = (hour_min_list[1] % 60)
-    return hour_min_list
+    if hour_min_list:
+        hour_min_list[0] += (hour_min_list[1] // 60)
+        hour_min_list[1] = (hour_min_list[1] % 60)
+        return hour_min_list
+    else:
+        return None
+
+# TAKES INITIAL DATE AND RETURNS A LIST OF DATES FROM THE INITIAL DAY
+def week_dates(initial_date, days:int):
+    """
+    :param initial_date: The starting date in the list where the other dates are incremented from
+    :param days: Number of days that will be appended to the list from the initial_date
+    :return: A list of dates in string format as '%Y-%m-%d'
+    """
+    temp = datetime.strptime(initial_date, '%Y-%m-%d')
+    temp_list = [temp]
+    for i in range(days - 1):
+        temp += timedelta(days=1)
+        temp_list.append(temp)
+    return [datetime.strftime(date, '%Y-%m-%d') for date in temp_list]
 

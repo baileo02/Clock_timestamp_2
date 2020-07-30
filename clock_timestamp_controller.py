@@ -6,6 +6,8 @@ from clock_on_page import ClockOn
 from timesheet_page import TimeSheet
 from alter_hour_page import AlterHour
 import exception_utility as excep
+from datetime_utility import week_dates
+
 
 class Controller:
 
@@ -16,10 +18,9 @@ class Controller:
         self.root.geometry('300x300')
         # INITIALIZE MODEL
         self.model = Model()
-        self._cur_date = self.model.get_current_date()
-        self._cur_time = self.model.get_current_time()
+
         # ADD NOTEBOOK WIDGET TO ROOT LAYER
-        self.nb = tk.ttk.Notebook(self.root, width=300, height=300)
+        self.nb = tk.ttk.Notebook(self.root)
         self.nb.grid()
 
         # INITIALIZE CLOCK ON APP AND FRAME
@@ -28,42 +29,60 @@ class Controller:
         self.clock_on_app = ClockOn(self.clock_on_frame, 'Clock on working')
 
         # INITIALIZE TIME SHEET APP AND FRAME
-        self.timesheet_app = tk.Frame(self.nb)
-        self.nb.add(self.timesheet_app, text='Time Sheet')
-        self.timesheet_app = TimeSheet(self.timesheet_app, 'Time sheet working')
+        self.timesheet_frame = tk.Frame(self.nb)
+        self.nb.add(self.timesheet_frame, text='Time Sheet')
+        self.timesheet_app = TimeSheet(self.timesheet_frame, 'Time sheet working')
 
         # INITIALIZE ALTER HOUR APP AND FRAME
-        self.alter_hour_page = tk.Frame(self.nb)
-        self.nb.add(self.alter_hour_page, text='Alter hours')
-        self.alter_hour_page = AlterHour(self.alter_hour_page, 'Alter hours is working')
+        self.alter_hour_frame = tk.Frame(self.nb)
+        self.nb.add(self.alter_hour_frame, text='Alter hours')
+        self.alter_hour_page = AlterHour(self.alter_hour_frame, 'Alter hours is working')
 
         # INITIALIZE BACKEND DATA, POPULATES EMP LISTS / TIMES
-        self.init_data()
+        self.init_app()
 
         # HANDLES AND REDIRECTS EVENTS FROM VIEW
         self.event_trigger()
 
-
         self.root.mainloop()
 
-    def init_data(self):
+    def init_app(self):
         self.clock_on_app.populate_emp_list(self.model.get_all_emp())
+        # self.timesheet_app.init_grid_frame(self.model.get_num_of_emp())
 
     # BUNDLE OF EVENT TRIGGERS FROM THE DIFFERENT APP VIEWS.
     def event_trigger(self):
         self.clock_on_app.combobox.bind("<<ComboboxSelected>>", self.emp_select)
         self.clock_on_app.on_button.bind("<Button-1>", self.clock_on)
         self.clock_on_app.off_button.bind("<Button-1>", self.clock_off)
+        self.timesheet_app.calendar.bind("<<DateEntrySelected>>", self.date_select)
+
+    # DATE SELECTOR FOR TIME SHEET APP EVENT CALL
+    def date_select(self, event):
+        self.timesheet_app.clear_grid()
+        sel_date = event.widget.get()
+        days = 7
+        for row, emp in enumerate(self.model.get_all_emp(), 1):
+            dates = []
+            self.timesheet_app.init_grid_frame(row, 0, emp)
+            for column, date in enumerate(week_dates(sel_date, days)):
+                self.timesheet_app.init_grid_frame(0, column+1, date)
+                self.timesheet_app.init_grid_frame(row, column+1, self.model.get_hours_worked(self.model.get_id_by_name(emp), date))
+                dates.append(date)
+            self.timesheet_app.init_grid_frame(0, days+1, 'Total')
+            self.timesheet_app.init_grid_frame(row, days+1, self.model.get_total_hours(self.model.get_id_by_name(emp), dates))
+
 
     # CLOCK ON AND OFF BUTTON EVENT CALLS
     def clock_on(self, event):
         try:
             if self.clock_on_app.employee:
                 self.clock_on_app.click_on()
-                self.model.create_time_record(self.clock_on_app.time_type, self.model.get_id_by_name(self.clock_on_app.employee),
-                                              self._cur_date, self._cur_time)
-                self.show_clock_time('clock_on', self.model.get_id_by_name(self.clock_on_app.employee), self._cur_date)
-
+                self.model.create_time_record(self.clock_on_app.time_type,
+                                              self.model.get_id_by_name(self.clock_on_app.employee),
+                                              self.model.get_current_date(), self.model.get_current_time())
+                self.show_clock_time('clock_on', self.model.get_id_by_name(self.clock_on_app.employee),
+                                     self.model.get_current_date())
             else:
                 raise excep.NoEmployeeSelected
         except excep.NoEmployeeSelected:
@@ -79,12 +98,12 @@ class Controller:
                 self.clock_on_app.click_off()
                 emp_id = self.model.get_id_by_name(self.clock_on_app.employee)
                 # CHECK IF CLOCK OFF TIME ALREADY EXISTS.
-                if not self.model.get_time(self.clock_on_app.time_type, emp_id, self._cur_date):
+                if not self.model.get_time(self.clock_on_app.time_type, emp_id, self.model.get_current_date()):
                     self.model.set_time_record(self.clock_on_app.time_type, emp_id,
-                                               self._cur_date, self._cur_time)
+                                               self.model.get_current_date(), self.model.get_current_time())
                 else:
                     raise excep.AlreadyClockedOff
-                self.show_clock_time('clock_off', emp_id, self._cur_date)
+                self.show_clock_time('clock_off', emp_id, self.model.get_current_date())
             else:
                 raise excep.NoEmployeeSelected
         except excep.NoEmployeeSelected:
@@ -96,7 +115,8 @@ class Controller:
     def emp_select(self, event):
         self.clock_on_app.on_combo_select()
         for time_type in ['clock_on', 'clock_off']:
-            self.show_clock_time(time_type, self.model.get_id_by_name(self.clock_on_app.employee), self._cur_date)
+            self.show_clock_time(time_type, self.model.get_id_by_name(self.clock_on_app.employee),
+                                 self.model.get_current_date())
 
     # UPDATES THE CLOCK ON APP LABEL TO REFLECT THE EMPLOYEE TIME
     def show_clock_time(self, time_type, _id, _date):
@@ -111,7 +131,6 @@ class Controller:
                 self.clock_on_app.on_label['text'] = 'NOT CLOCKED ON'
             elif time_type == 'clock_off':
                 self.clock_on_app.off_label['text'] = 'NOT CLOCKED OFF'
-
 
     # def record_clock_in(self):
     #     self.model.create_time_record(self.clock_on_app.time_type, 1, )
@@ -142,6 +161,6 @@ class Controller:
     # def change_clock_time(self, time_type, _id, _date, time_value):
     #     self.model.set_time_record(time_type, _id, _date, time_value)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     c = Controller()

@@ -5,6 +5,7 @@
 from database_connection import Database
 from datetime_utility import TimeCalculation, convert_min_overflow
 from datetime import datetime
+import exception_utility as excep
 
 
 class Model:
@@ -39,17 +40,26 @@ class Model:
     def get_all_emp(self):
         return self.db.get_all_emp()
 
-    def get_hours_worked(self, _id, _date):
+    def get_hours_worked(self, _id, _date:str):
         clock_off_time = TimeCalculation(self.db.get_time('clock_off', _id, _date))
         clock_on_time = TimeCalculation(self.db.get_time('clock_on', _id, _date))
-        time_worked = clock_off_time - clock_on_time
-        return time_worked
+        try:
+            if clock_on_time.time and clock_off_time.time:
+                time_worked = clock_off_time - clock_on_time
+                return time_worked
+            elif clock_on_time.time and not clock_off_time.time:
+                raise excep.MissingClockOff
+        except excep.MissingClockOff:
+            return 'Amend'
 
+    # GETS ID AND A LIST OF DATES AND RETURNS THE TOTAL HOURS, MIN
+    # hours_worked input must be a tuple with two integers e.g. (6,30)
     def get_total_hours(self, _id, dates):
         total_hours = 0
         hours_list = []
         for date in dates:
-            if self.get_hours_worked(_id, date):
+            hours_worked = self.get_hours_worked(_id, date)
+            if hours_worked and not isinstance(hours_worked, str):
                 hours_list.append(self.get_hours_worked(_id, date))
                 total_hours = [sum(sum_hours) for sum_hours in zip(*hours_list)]
         return convert_min_overflow(total_hours)
