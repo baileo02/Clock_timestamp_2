@@ -111,8 +111,8 @@ class Controller:
 
     def alter_time(self, time_type):
         emp_id = self.model.get_id_by_name(self.alter_hour_app.employee)
-        clock_off_time = self.model.get_time('clock_off', emp_id, self.model.get_current_date())
-        clock_on_time = self.model.get_time('clock_on', emp_id, self.model.get_current_date())
+        clock_off_time = self.model.get_time('clock_off', emp_id, self.alter_hour_app.date_value)
+        clock_on_time = self.model.get_time('clock_on', emp_id, self.alter_hour_app.date_value)
         print(clock_off_time)
         print(clock_on_time)
         try:

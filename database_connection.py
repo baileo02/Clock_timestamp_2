@@ -96,8 +96,6 @@ class Database:
         # SQL TO CHECK IF RECORD EXISTS FOR SPECIFIC USER+DATE
         record_sql = self.acursor.execute('SELECT emp_id FROM timestamp WHERE (emp_id = ? AND date = ?)', (_id, _date)).fetchone()
         # RETURNS CLOCK ON/OFF VALUE FOR SPECIFIC USER+DATE
-        # clock_on_value = self.acursor.execute(f'SELECT clock_on FROM timestamp WHERE (emp_id=? AND date=?)', (_id, _date)).fetchone()
-        # clock_off_value = self.acursor.execute(f'SELECT clock_off FROM timestamp WHERE (emp_id=? AND date=?)', (_id, _date)).fetchone()
         if record_sql:
             print('Updating record')
             self.acursor.execute(f'UPDATE timestamp SET {time_type} = ? WHERE (emp_id=? AND date=?)',
@@ -105,12 +103,6 @@ class Database:
             self.db.commit()
         else:
             raise excep.RecordNotFound(f'Record for employeeID: {_id} for this date: {_date} does not exist')
-
-# raise excep.RecordNotFound(f'Record for employeeID: {_id} for this date: {_date} does not exist')
-#
-# print('Updating record')
-# self.acursor.execute(f'UPDATE timestamp SET {time_type} = ? WHERE (emp_id=? AND date=?)', (time_value, _id, _date))
-# self.db.commit()
 
 
 if __name__ == '__main__':
