@@ -17,7 +17,7 @@ class Controller:
         # INITIALIZE TK INTERFACE
         self.root = tk.Tk()
         self.root.title('Time System')
-        self.root.geometry('300x300')
+        self.root.resizable(False, False)
         # INITIALIZE MODEL
         self.model = Model()
 
