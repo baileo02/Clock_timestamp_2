@@ -63,6 +63,7 @@ class AlterHour(FrameTemplate):
 
     def populate_emp_list(self, emp_list):
         self.emp_combobox['values'] = emp_list
+        self.emp_combobox.set('Select Employee:')
 
     def ask_password(self):
         self.user_input = tk.simpledialog.askstring('Password', 'Access password', parent=self.parent_frame)

@@ -14,7 +14,6 @@ class ClockOn(FrameTemplate):
         self.employee = employee
         # self.time_value = time_value
 
-
         # INITIALIZE COMBOBOX
         self.combobox = ttk.Combobox(self.parent_frame, state='readonly')
         self.combobox.grid()
@@ -33,6 +32,7 @@ class ClockOn(FrameTemplate):
 
     def populate_emp_list(self, emp_list):
         self.combobox['values'] = emp_list
+        self.combobox.set('Select Employee:')
 
     @property
     def time_type(self):
