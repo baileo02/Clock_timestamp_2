@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, simpledialog
 from generic_templates import FrameTemplate
 
 class ClockOn(FrameTemplate):
@@ -12,7 +12,8 @@ class ClockOn(FrameTemplate):
         # PROPERTY VARIABLES FOR MODEL GET AND SET
         self.time_type = time_type
         self.employee = employee
-        self.time_value = time_value
+        # self.time_value = time_value
+
 
         # INITIALIZE COMBOBOX
         self.combobox = ttk.Combobox(self.parent_frame, state='readonly')
@@ -27,7 +28,7 @@ class ClockOn(FrameTemplate):
         # INITIALIZE LABELS
         self.on_label = tk.Label(self.parent_frame)
         self.off_label = tk.Label(self.parent_frame)
-        self.on_label.grid(row=2, column=1)
+        self.on_label.grid(row=2, column=1, sticky='nsew')
         self.off_label.grid(row=3, column=1)
 
     def populate_emp_list(self, emp_list):
@@ -35,32 +36,26 @@ class ClockOn(FrameTemplate):
 
     @property
     def time_type(self):
-        print('getting time type')
         return self._time_type
 
     @time_type.setter
     def time_type(self, value):
-        print('setting time type value')
         self._time_type = value
 
     @property
     def employee(self):
-        print('getting employee')
         return self._employee
 
     @employee.setter
     def employee(self, value):
-        print('setting employee')
         self._employee = value
 
     @property
     def time_value(self):
-        print('getting time value')
         return self._time_value
 
     @time_value.setter
     def time_value(self, value):
-        print('setting time value')
         self._time_value = value
 
     def on_combo_select(self):
@@ -68,12 +63,8 @@ class ClockOn(FrameTemplate):
         print(self.employee)
 
     def click_on(self):
-        print('on clicked')
         self.time_type = 'clock_on'
 
     def click_off(self):
-        print('off clicked')
         self.time_type = 'clock_off'
-
-
 

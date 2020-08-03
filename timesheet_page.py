@@ -11,11 +11,11 @@ class TimeSheet(FrameTemplate):
 
         # INITIALIZE TOP AND BOTTOM FRAMES AS CONTAINERS
         self.date_frame = tk.Frame(self.parent_frame)
-        self.date_frame.grid(row=1)
+        self.date_frame.grid(row=1, sticky='w')
         self.time_grid_frame = tk.Frame(self.parent_frame)
         self.time_grid_frame.grid(row=2)
 
-        self.calendar = tkcalendar.DateEntry(self.date_frame, date_pattern='y-mm-dd')
+        self.calendar = tkcalendar.DateEntry(self.date_frame, date_pattern='y-mm-dd', state='readonly')
         self.calendar.grid()
 
         # INITIALIZE GRID-CELL FRAMES
@@ -32,8 +32,6 @@ class TimeSheet(FrameTemplate):
         self.time_grid_frame.destroy()
         self.time_grid_frame = tk.Frame(self.parent_frame)
         self.time_grid_frame.grid(row=2)
-
-    #todo think of a way to best update the labels (hours worked) within the frame in the grid cells.
 
     # def display_updated_timesheet(self, row, column, hours_worked):
     #         frame = tk.Frame(self.time_grid_frame, bg='blue')

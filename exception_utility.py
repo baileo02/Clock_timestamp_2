@@ -22,3 +22,9 @@ class MissingClockOff(Exception):
     Clock on recorded, but no clock off time
     """
     pass
+
+class IncorrectPassword(Exception):
+     pass
+
+class IllogicalTime(Exception):
+     pass
