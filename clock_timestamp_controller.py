@@ -54,6 +54,19 @@ class Controller:
         event.widget.update_idletasks()
         tab = event.widget.nametowidget(event.widget.select())
         event.widget.configure(height=tab.winfo_reqheight(), width=tab.winfo_reqwidth())
+        # Updates tab accordingly
+
+        selected_tab = event.widget.tab(event.widget.select(), 'text')
+        if selected_tab == 'Clock On':
+            print(self.clock_on_app.time_type, self.clock_on_app.employee)
+            if self.clock_on_app.employee:
+                self.update_clock_time()
+        if selected_tab == 'Time Sheet':
+            self.display_timesheet_grid(self.timesheet_app.calendar.get(), 7)
+        if selected_tab == 'Alter hours':
+            if self.alter_hour_app.employee:
+                self.update_show_time()
+
 
     def init_app(self):
         self.clock_on_app.populate_emp_list(self.model.get_all_emp())
@@ -212,6 +225,9 @@ class Controller:
     # EMPLOYEE LIST EVENT CALL FOR WHEN AN EMPLOYEE IS SELECTED FROM THE LIST
     def emp_select(self, event):
         self.clock_on_app.on_combo_select()
+        self.update_clock_time()
+
+    def update_clock_time(self):
         for time_type in ['clock_on', 'clock_off']:
             self.show_clock_time(time_type, self.model.get_id_by_name(self.clock_on_app.employee),
                                  self.model.get_current_date())
