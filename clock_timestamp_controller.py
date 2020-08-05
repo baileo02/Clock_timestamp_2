@@ -47,7 +47,7 @@ class Controller:
 
         self.root.mainloop()
 
-    # todo tab change height/width not working
+
     def _on_tab_changed(self, event):
         # gets the widget clicked and configures the height and width.z`
         event.widget.update_idletasks()

@@ -9,6 +9,8 @@ class Database:
 
         self.db = None
         self.create_connection(db_file)
+#todo creating the initial database.
+#todo this section needs to be split
 
     def create_connection(self, db_file):
         try:
