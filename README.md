@@ -40,7 +40,7 @@ Default access password for admin control is: 'admin' and this can be changed in
 <a name="project-status"></a>
 ## Project Status
 This project is primarily for personal learning and as such, it is still in development and not applicable for all business types.
-Currently, all data is stored locally but for future iterations, I plan to implement databases on servers.
+Currently, all data is stored locally but for future iterations, I plan to implement server based database
 
 <a name="sources"></a>
 ## Sources 
