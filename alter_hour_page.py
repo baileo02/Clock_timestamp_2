@@ -39,7 +39,7 @@ class AlterHour(FrameTemplate):
 
         # CHOSEN PASSWORD TO ACCESS ALTER CONTROLS
         # since this app is only using a local database, the password is only saved on script.
-        self._password = 'bj'
+        self._password = 'admin'
 
         # INITIALIZE VARIABLES
         self.parent_frame = parent_frame
