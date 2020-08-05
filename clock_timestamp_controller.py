@@ -97,9 +97,11 @@ class Controller:
 
     def alter_on(self, event):
         self.alter_time('clock_on')
+        return 'break'
 
     def alter_off(self, event):
         self.alter_time('clock_off')
+        return 'break'
 
     # UPDATES BOTH TIME TYPES
     def update_show_time(self):
@@ -162,6 +164,7 @@ class Controller:
             messagebox.showerror('Access denied', 'Incorrect password')
         except excep.IllogicalTime:
             messagebox.showerror('Time Error', 'Clock ON time must be less than Clock OFF time')
+
 
     # DATE SELECTOR FOR TIME SHEET APP EVENT CALL
     def date_select(self, event):
