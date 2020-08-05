@@ -60,7 +60,6 @@ class ClockOn(FrameTemplate):
 
     def on_combo_select(self):
         self.employee = self.combobox.get()
-        print(self.employee)
 
     def click_on(self):
         self.time_type = 'clock_on'

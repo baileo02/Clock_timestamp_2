@@ -35,7 +35,6 @@ def ex_break_time(total_hours, break_hours):
         total_break_hours = total_hours[0] - break_hours[0]
         total_break_minutes = total_hours[1] - break_hours[1]
 
-        print([total_break_hours, total_break_minutes])
         if total_break_hours > 0:
             return convert_min_overflow([total_break_hours, total_break_minutes])
         else:

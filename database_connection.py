@@ -86,7 +86,6 @@ class Database:
         if record_sql:
             raise excep.RecordAlreadyExists(f'Record existing for employeeID: {_id} for this date: {_date}')
         else:
-            print('Inserting new record..')
             self.acursor.execute(
                 f'INSERT INTO timestamp ({time_type}, emp_id, date) VALUES (?,?,?)', (time_value, _id, _date))
             self.db.commit()
@@ -97,7 +96,6 @@ class Database:
         record_sql = self.acursor.execute('SELECT emp_id FROM timestamp WHERE (emp_id = ? AND date = ?)', (_id, _date)).fetchone()
         # RETURNS CLOCK ON/OFF VALUE FOR SPECIFIC USER+DATE
         if record_sql:
-            print('Updating record')
             self.acursor.execute(f'UPDATE timestamp SET {time_type} = ? WHERE (emp_id=? AND date=?)',
                                  (time_value, _id, _date))
             self.db.commit()

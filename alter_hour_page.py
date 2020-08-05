@@ -70,8 +70,6 @@ class AlterHour(FrameTemplate):
         self.user_input = tk.simpledialog.askstring('Password', 'Access password', parent=self.parent_frame, show='*')
         if self.user_input == self._password:
             return True
-        elif not self.user_input:
-            print('Cancelled')
         else:
             return False
 
@@ -113,8 +111,7 @@ class AlterHour(FrameTemplate):
 
     def on_combo_select(self):
         self.employee = self.emp_combobox.get()
-        print(self.employee)
 
     def on_date_select(self):
         self.date_value = self.calendar.get()
-        print(self.date_value)
+

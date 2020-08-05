@@ -57,7 +57,6 @@ class Controller:
 
         selected_tab = event.widget.tab(event.widget.select(), 'text')
         if selected_tab == 'Clock On':
-            print(self.clock_on_app.time_type, self.clock_on_app.employee)
             if self.clock_on_app.employee:
                 self.update_clock_time()
         if selected_tab == 'Time Sheet':
@@ -127,8 +126,6 @@ class Controller:
         emp_id = self.model.get_id_by_name(self.alter_hour_app.employee)
         clock_off_time = self.model.get_time('clock_off', emp_id, self.alter_hour_app.date_value)
         clock_on_time = self.model.get_time('clock_on', emp_id, self.alter_hour_app.date_value)
-        print(clock_off_time)
-        print(clock_on_time)
         try:
             if self.alter_hour_app.employee:
                 if self.alter_hour_app.ask_password():
@@ -162,8 +159,16 @@ class Controller:
                 raise excep.NoEmployeeSelected
         except excep.IncorrectPassword:
             messagebox.showerror('Access denied', 'Incorrect password')
+            return 'break'
+
         except excep.IllogicalTime:
-            messagebox.showerror('Time Error', 'Clock ON time must be less than Clock OFF time')
+            messagebox.showinfo('Attention', 'Clock ON time must be less than Clock OFF time')
+            return 'break'
+
+        except excep.NoEmployeeSelected:
+            messagebox.showinfo('Attention', 'No Employee seleceted')
+            return 'break'
+
 
 
     # DATE SELECTOR FOR TIME SHEET APP EVENT CALL
@@ -205,11 +210,11 @@ class Controller:
             else:
                 raise excep.NoEmployeeSelected
         except excep.NoEmployeeSelected:
-            print('No employee is selected!')
-            print()
+            messagebox.showinfo('Attention', 'No employee selected')
+            return 'break'
         except excep.RecordAlreadyExists:
-            print('This employee has already clocked on today!')
-            print()
+            messagebox.showinfo('Attention', 'Employee has already clocked on today')
+            return 'break'
 
     def clock_off(self, event):
         try:
@@ -226,9 +231,12 @@ class Controller:
             else:
                 raise excep.NoEmployeeSelected
         except excep.NoEmployeeSelected:
-            print('No employee is selected!')
+            messagebox.showinfo('Attention', 'No employee is selected!')
+            return 'break'
         except excep.AlreadyClockedOff:
-            print('Employee has already clocked off!')
+            messagebox.showinfo('Attention', 'Employee has already clocked off!')
+            return 'break'
+
 
     # EMPLOYEE LIST EVENT CALL FOR WHEN AN EMPLOYEE IS SELECTED FROM THE LIST
     def emp_select(self, event):
@@ -243,7 +251,6 @@ class Controller:
     # UPDATES THE CLOCK ON APP LABEL TO REFLECT THE EMPLOYEE TIME
     def show_clock_time(self, time_type, _id, _date):
         time_value = self.model.get_time(time_type, _id, _date)
-        print(f'tiem value is {time_value}')
         if time_value:
             if time_type == 'clock_on':
                 self.clock_on_app.on_label['text'] = time_value
