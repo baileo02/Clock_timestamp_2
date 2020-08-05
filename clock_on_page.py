@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter import ttk, simpledialog
+from tkinter import ttk
 from generic_templates import FrameTemplate
 
 class ClockOn(FrameTemplate):
 
-    def __init__(self, parent_frame, text, time_type=None, employee=None, time_value=None):
-        super().__init__(parent_frame, text)
+    def __init__(self, parent_frame, time_type=None, employee=None, time_value=None):
+        super().__init__(parent_frame)
         # PARENT IS CLOCK ON FRAME > NOTEBOOK > ROOT
         self.parent_frame = parent_frame
 

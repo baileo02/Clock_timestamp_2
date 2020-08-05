@@ -7,8 +7,7 @@ from timesheet_page import TimeSheet
 from alter_hour_page import AlterHour
 import exception_utility as excep
 from datetime_utility import week_dates
-from generic_templates import MessageWindow
-
+from datetime_utility import convert_min_overflow, ex_break_time
 
 
 class Controller:
@@ -28,17 +27,17 @@ class Controller:
         # INITIALIZE CLOCK ON APP AND FRAME
         self.clock_on_frame = tk.Frame(self.nb)
         self.nb.add(self.clock_on_frame, text='Clock On')
-        self.clock_on_app = ClockOn(self.clock_on_frame, 'Clock on working')
+        self.clock_on_app = ClockOn(self.clock_on_frame)
 
         # INITIALIZE TIME SHEET APP AND FRAME
         self.timesheet_frame = tk.Frame(self.nb)
         self.nb.add(self.timesheet_frame, text='Time Sheet')
-        self.timesheet_app = TimeSheet(self.timesheet_frame, 'Time sheet working')
+        self.timesheet_app = TimeSheet(self.timesheet_frame)
 
         # INITIALIZE ALTER HOUR APP AND FRAME
         self.alter_hour_frame = tk.Frame(self.nb)
         self.nb.add(self.alter_hour_frame, text='Alter hours')
-        self.alter_hour_app = AlterHour(self.alter_hour_frame, 'Alter hours is working')
+        self.alter_hour_app = AlterHour(self.alter_hour_frame)
 
         # INITIALIZE BACKEND DATA, POPULATES EMP LISTS / TIMES
         self.init_app()
@@ -50,7 +49,7 @@ class Controller:
 
     # todo tab change height/width not working
     def _on_tab_changed(self, event):
-        # gets the widget clicked and configures the height and width.
+        # gets the widget clicked and configures the height and width.z`
         event.widget.update_idletasks()
         tab = event.widget.nametowidget(event.widget.select())
         event.widget.configure(height=tab.winfo_reqheight(), width=tab.winfo_reqwidth())
@@ -173,16 +172,22 @@ class Controller:
 
     def display_timesheet_grid(self, selected_date, days):
         for row, emp in enumerate(self.model.get_all_emp(), 1):
+            emp_id = self.model.get_id_by_name(emp)
             dates = []
             self.timesheet_app.init_grid_frame(row, 0, emp)
             for column, date in enumerate(week_dates(selected_date, days)):
                 self.timesheet_app.init_grid_frame(0, column + 1, date)
                 self.timesheet_app.init_grid_frame(row, column + 1,
-                                                   self.model.get_hours_worked(self.model.get_id_by_name(emp), date))
+                                                   self.model.get_hours_worked(emp_id, date))
                 dates.append(date)
             self.timesheet_app.init_grid_frame(0, days + 1, 'Total')
+            self.timesheet_app.init_grid_frame(0, days + 2, 'Break Total')
             self.timesheet_app.init_grid_frame(row, days + 1,
-                                               self.model.get_total_hours(self.model.get_id_by_name(emp), dates))
+                                               self.model.get_total_hours(emp_id, dates))
+            if self.model.get_num_days_worked(dates, emp_id) > 0:
+                break_time = self.model.get_num_days_worked(dates, emp_id) * 30
+                self.timesheet_app.init_grid_frame(row, days + 2,
+                                                   ex_break_time(self.model.get_total_hours(emp_id, dates), convert_min_overflow([0, break_time])))
 
     # CLOCK ON AND OFF BUTTON EVENT CALLS
     def clock_on(self, event):

@@ -34,10 +34,11 @@ class AlterDialog(Dialog):
 
 class AlterHour(FrameTemplate):
 
-    def __init__(self, parent_frame, text, date_value=None, time_type=None, employee=None, time_value=None, user_input=None):
-        super().__init__(parent_frame, text)
+    def __init__(self, parent_frame, date_value=None, time_type=None, employee=None, time_value=None, user_input=None):
+        super().__init__(parent_frame)
 
         # CHOSEN PASSWORD TO ACCESS ALTER CONTROLS
+        # since this app is only using a local database, the password is only saved on script.
         self._password = 'bj'
 
         # INITIALIZE VARIABLES
@@ -66,7 +67,7 @@ class AlterHour(FrameTemplate):
         self.emp_combobox.set('Select Employee:')
 
     def ask_password(self):
-        self.user_input = tk.simpledialog.askstring('Password', 'Access password', parent=self.parent_frame)
+        self.user_input = tk.simpledialog.askstring('Password', 'Access password', parent=self.parent_frame, show='*')
         if self.user_input == self._password:
             return True
         elif not self.user_input:

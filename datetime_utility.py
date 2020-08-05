@@ -30,6 +30,17 @@ def convert_min_overflow(hour_min_list: list):
     else:
         return None
 
+def ex_break_time(total_hours, break_hours):
+    if total_hours and break_hours:
+        total_break_hours = total_hours[0] - break_hours[0]
+        total_break_minutes = total_hours[1] - break_hours[1]
+
+        print([total_break_hours, total_break_minutes])
+        if total_break_hours > 0:
+            return convert_min_overflow([total_break_hours, total_break_minutes])
+        else:
+            return None
+
 # TAKES INITIAL DATE AND RETURNS A LIST OF DATES FROM THE INITIAL DAY
 def week_dates(initial_date, days:int):
     """

@@ -40,9 +40,18 @@ class Model:
     def get_all_emp(self):
         return self.db.get_all_emp()
 
+    def get_num_days_worked(self, dates, _id):
+        days_worked = 0
+        for date in dates:
+            if self.get_hours_worked(_id, date):
+                days_worked += 1
+        return days_worked
+
     def get_hours_worked(self, _id, _date:str):
         clock_off_time = TimeCalculation(self.db.get_time('clock_off', _id, _date))
         clock_on_time = TimeCalculation(self.db.get_time('clock_on', _id, _date))
+        # print(clock_on_time.time)
+        # print(type(clock_on_time.time))
         try:
             if clock_on_time.time and clock_off_time.time:
                 time_worked = clock_off_time - clock_on_time

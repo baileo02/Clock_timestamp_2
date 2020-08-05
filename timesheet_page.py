@@ -5,11 +5,13 @@ import tkcalendar
 
 class TimeSheet(FrameTemplate):
 
-    def __init__(self, parent_frame, text):
-        super().__init__(parent_frame, text)
+    def __init__(self, parent_frame):
+        super().__init__(parent_frame)
         self.parent_frame = parent_frame
 
         # INITIALIZE TOP AND BOTTOM FRAMES AS CONTAINERS
+        self.label = tk.Label(self.parent_frame, text='HR MIN format, Break time 30Mins')
+        self.label.grid()
         self.date_frame = tk.Frame(self.parent_frame)
         self.date_frame.grid(row=1, sticky='w')
         self.time_grid_frame = tk.Frame(self.parent_frame)
