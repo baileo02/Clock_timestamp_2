@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import clock_timestamp_model
 from clock_timestamp_model import Model
 import tkinter as tk

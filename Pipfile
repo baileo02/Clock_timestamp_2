@@ -10,3 +10,6 @@ tkcalendar = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+start = "python clock_timestamp_controller.py"
