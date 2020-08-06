@@ -9,16 +9,14 @@ class Database:
 
         self.db = None
         self.create_connection(db_file)
-#todo creating the initial database.
-#todo this section needs to be split
 
     def create_connection(self, db_file):
         try:
             self.db = sqlite3.connect(db_file)
             self.acursor = self.db.cursor()
-            self.create_tables()
-            if not self.acursor.execute('SELECT name FROM employee').fetchone():
-                self.insert_employees()
+            # self.create_tables()
+            # if not self.acursor.execute('SELECT name FROM employee').fetchone():
+            #     self.insert_employees()
             self.db.commit()
         except sqlite3.Error as e:
             print(e)
@@ -37,7 +35,7 @@ class Database:
             self.acursor.execute('INSERT OR IGNORE INTO employee (name) VALUES ("Elaine")')
             self.acursor.execute('INSERT OR IGNORE INTO employee (name) VALUES ("Wendy")')
 
-    # Backend functions
+    # BACKEND FUNCTIONS
     def get_name_by_id(self, _id):
         emp_name = self.acursor.execute('SELECT name FROM employee WHERE emp_id = ?', (_id,)).fetchone()
         if emp_name:
