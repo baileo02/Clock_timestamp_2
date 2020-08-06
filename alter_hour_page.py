@@ -5,6 +5,7 @@ from tkSimpleDialog import Dialog
 from tkinter import simpledialog
 import tkcalendar
 from tkinter import ttk, messagebox
+from exception_utility import IncorrectPassword
 
 
 class AlterDialog(Dialog):
@@ -71,13 +72,16 @@ class AlterHour(FrameTemplate):
 
     def new_employee(self):
         new_emp = tk.simpledialog.askstring('Add Employee', 'Employee Name', parent=self.parent_frame)
-        return  new_emp
+        return new_emp
 
     def ask_password(self):
         self.user_input = tk.simpledialog.askstring('Password', 'Access password', parent=self.parent_frame, show='*')
         if self.user_input == self._password:
             return True
+        elif self.user_input is None:
+            pass
         else:
+            messagebox.showerror('Access denied', 'Incorrect password')
             return False
 
     def alter_time(self):

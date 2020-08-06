@@ -88,12 +88,14 @@ class Controller:
 
     # CREATE EMPLOYEE
     def create_emp(self, event):
-        new_emp = self.alter_hour_app.new_employee()
-        if new_emp:
-            self.model.create_new_emp(new_emp)
-            self.clock_on_app.populate_emp_list(self.model.get_all_emp())
-            self.alter_hour_app.populate_emp_list(self.model.get_all_emp())
-            self.display_timesheet_grid(self.model.get_current_date(), 7)
+        if self.alter_hour_app.ask_password():
+            new_emp = self.alter_hour_app.new_employee()
+            if new_emp:
+                self.model.create_new_emp(new_emp)
+                messagebox.showinfo('Success', f'{new_emp} added!')
+                self.clock_on_app.populate_emp_list(self.model.get_all_emp())
+                self.alter_hour_app.populate_emp_list(self.model.get_all_emp())
+                self.display_timesheet_grid(self.model.get_current_date(), 7)
         return 'break'
 
 
@@ -165,10 +167,6 @@ class Controller:
                         else:
                             self.model.create_time_record(time_type, emp_id, self.alter_hour_app.date_value, self.alter_hour_app.time_value)
                         self.update_show_time()
-                elif self.alter_hour_app.user_input is None:
-                    pass
-                else:
-                    raise excep.IncorrectPassword
             else:
                 raise excep.NoEmployeeSelected
         except excep.IncorrectPassword:
