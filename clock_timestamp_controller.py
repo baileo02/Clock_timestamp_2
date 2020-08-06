@@ -85,6 +85,7 @@ class Controller:
         self.alter_hour_app.create_emp_button.bind("<ButtonRelease-1>", self.create_emp)
         # TIME SHEET EVENTS
         self.timesheet_app.calendar.bind("<<DateEntrySelected>>", self.date_select)
+        self.timesheet_app.break_time_entry.bind("<<ComboboxSelected>>", self.break_time_select)
 
     # CREATE EMPLOYEE
     def create_emp(self, event):
@@ -181,14 +182,16 @@ class Controller:
             messagebox.showinfo('Attention', 'No Employee seleceted')
             return 'break'
 
-
-
     # DATE SELECTOR FOR TIME SHEET APP EVENT CALL
     def date_select(self, event):
         self.timesheet_app.clear_grid()
-        sel_date = event.widget.get()
-        days = 7
-        self.display_timesheet_grid(sel_date, days)
+        selected_date = event.widget.get()
+        self.display_timesheet_grid(selected_date, 7)
+
+    def break_time_select(self, event):
+        self.timesheet_app.clear_grid()
+        self.display_timesheet_grid(self.timesheet_app.calendar.get(), 7)
+
 
     def display_timesheet_grid(self, selected_date, days):
         for row, emp in enumerate(self.model.get_all_emp(), 1):
@@ -205,11 +208,13 @@ class Controller:
             self.timesheet_app.init_grid_frame(row, days + 1,
                                                self.model.get_total_hours(emp_id, dates))
             if self.model.get_num_days_worked(dates, emp_id) > 0:
-                break_time = self.model.get_num_days_worked(dates, emp_id) * 30
+                break_time = self.model.get_num_days_worked(dates, emp_id) * self.timesheet_app.break_time_entry.get()
                 self.timesheet_app.init_grid_frame(row, days + 2,
-                                                   ex_break_time(self.model.get_total_hours(emp_id, dates), convert_min_overflow([0, break_time])))
+                                                   ex_break_time(self.model.get_total_hours(emp_id, dates), convert_min_overflow([0, int(break_time)])))
 
-    # CLOCK ON AND OFF BUTTON EVENT CALLS
+
+
+
     def clock_on(self, event):
         try:
             if self.clock_on_app.employee:
@@ -227,6 +232,7 @@ class Controller:
         except excep.RecordAlreadyExists:
             messagebox.showinfo('Attention', 'Employee has already clocked on today')
             return 'break'
+    # CLOCK ON AND OFF BUTTON EVENT CALLS
 
     def clock_off(self, event):
         try:

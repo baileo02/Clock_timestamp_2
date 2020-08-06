@@ -5,18 +5,26 @@ import tkcalendar
 
 class TimeSheet(FrameTemplate):
 
-    def __init__(self, parent_frame, label):
+    def __init__(self, parent_frame, label, ):
         super().__init__(parent_frame)
         self.parent_frame = parent_frame
         self.label = label
         # INITIALIZE TOP AND BOTTOM FRAMES AS CONTAINERS
-        self.date_frame = tk.Frame(self.parent_frame)
-        self.date_frame.grid(row=1, sticky='w')
+        self.option_frame = tk.Frame(self.parent_frame)
+        self.option_frame.grid(row=1, sticky='w')
         self.time_grid_frame = tk.Frame(self.parent_frame)
         self.time_grid_frame.grid(row=2)
 
-        self.calendar = tkcalendar.DateEntry(self.date_frame, date_pattern='y-mm-dd', state='readonly')
-        self.calendar.grid()
+        # DATE AND BREAK TIME SELECT
+        date_label = tk.Label(self.option_frame, text='Start Date')
+        date_label.grid(row=0, column=0)
+        self.calendar = tkcalendar.DateEntry(self.option_frame, date_pattern='y-mm-dd', state='readonly')
+        self.calendar.grid(row=1, column=0)
+        break_label = tk.Label(self.option_frame, text='Break time each day (minutes)')
+        break_label.grid(row=0, column=1)
+        self.break_time_entry = ttk.Combobox(self.option_frame, values=tuple(range(0, 61)), state='readonly')
+        self.break_time_entry.grid(row=1, column=1)
+        self.break_time_entry.set(30)
 
         # INITIALIZE GRID-CELL FRAMES
     def init_grid_frame(self, num_emp, days, cell_data):

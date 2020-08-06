@@ -33,9 +33,9 @@ Default access password for admin control is: 'admin' and this can be changed in
 
 <a name="features"></a>
 ## Features
-* Admin has the ability to fix incorrect clock on/off times for employees
+* Simple intuitive clock on and off system
 * Easy to visualise hours worked grid, counting total hours for each employee.
-* Adjustable default break time allocated for employees accounted for.
+* Admin can add employees as well as amend clock on/off times
 
 <a name="project-status"></a>
 ## Project Status
