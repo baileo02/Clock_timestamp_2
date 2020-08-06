@@ -14,6 +14,7 @@ class Database:
         try:
             self.db = sqlite3.connect(db_file)
             self.acursor = self.db.cursor()
+            self.create_tables()
             self.db.commit()
         except sqlite3.Error as e:
             print(e)
