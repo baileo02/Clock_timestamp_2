@@ -19,8 +19,6 @@ class AlterDialog(Dialog):
         tk.Label(master, text="Minute:").grid(row=1)
 
         self.results = None
-        # todo clicking cancel returns None by default
-        # todo need to work around this.
         self.hour = ttk.Combobox(master, values=tuple(range(0, 24)), state='readonly')
         self.minute = ttk.Combobox(master, values=tuple(range(0, 60)), state='readonly')
 
@@ -56,15 +54,24 @@ class AlterHour(FrameTemplate):
         self.calendar.grid(sticky='ew')
         self.date_value = self.calendar.get()
 
+        # INITIALIZE BUTTON FOR CREATING NEW EMPLOYEE
+        self.create_emp_button = tk.Button(self.parent_frame, text='CREATE EMPLOYEE')
+        self.create_emp_button.grid(sticky='ew')
+
         # INITIALIZE BUTTONS THAT DISPLAY CLOCK ON AND OFF TIMES
-        self.on_button = tk.Button(self.parent_frame, text='ON')
-        self.off_button = tk.Button(self.parent_frame, text='OFF')
+        self.on_button = tk.Button(self.parent_frame, text='CLOCK ON TIME')
+        self.off_button = tk.Button(self.parent_frame, text='CLOCK OFF TIME')
         self.on_button.grid(sticky='ew')
         self.off_button.grid(sticky='ew')
+
 
     def populate_emp_list(self, emp_list):
         self.emp_combobox['values'] = emp_list
         self.emp_combobox.set('Select Employee:')
+
+    def new_employee(self):
+        new_emp = tk.simpledialog.askstring('Add Employee', 'Employee Name', parent=self.parent_frame)
+        return  new_emp
 
     def ask_password(self):
         self.user_input = tk.simpledialog.askstring('Password', 'Access password', parent=self.parent_frame, show='*')

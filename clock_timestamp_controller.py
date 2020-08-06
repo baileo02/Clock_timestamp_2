@@ -22,7 +22,7 @@ class Controller:
 
         # ADD NOTEBOOK WIDGET TO ROOT LAYER
         self.nb = tk.ttk.Notebook(self.root)
-        self.nb.grid()
+        self.nb.grid(sticky='nsew')
 
         # INITIALIZE CLOCK ON APP AND FRAME
         self.clock_on_frame = tk.Frame(self.nb)
@@ -32,11 +32,11 @@ class Controller:
         # INITIALIZE TIME SHEET APP AND FRAME
         self.timesheet_frame = tk.Frame(self.nb)
         self.nb.add(self.timesheet_frame, text='Time Sheet')
-        self.timesheet_app = TimeSheet(self.timesheet_frame)
+        self.timesheet_app = TimeSheet(self.timesheet_frame, 'HR MIN format, Break time 30Mins')
 
         # INITIALIZE ALTER HOUR APP AND FRAME
         self.alter_hour_frame = tk.Frame(self.nb)
-        self.nb.add(self.alter_hour_frame, text='Alter hours')
+        self.nb.add(self.alter_hour_frame, text='Admin')
         self.alter_hour_app = AlterHour(self.alter_hour_frame)
 
         # INITIALIZE BACKEND DATA, POPULATES EMP LISTS / TIMES
@@ -47,12 +47,11 @@ class Controller:
 
         self.root.mainloop()
 
-
     def _on_tab_changed(self, event):
-        # gets the widget clicked and configures the height and width.z`
+        # gets the widget clicked and configures the height and width.
         event.widget.update_idletasks()
         tab = event.widget.nametowidget(event.widget.select())
-        event.widget.configure(height=tab.winfo_reqheight(), width=tab.winfo_reqwidth())
+        event.widget.configure(height=tab.winfo_reqheight(), width=tab.winfo_reqwidth()+30)
         # Updates tab accordingly
 
         selected_tab = event.widget.tab(event.widget.select(), 'text')
@@ -65,7 +64,6 @@ class Controller:
             if self.alter_hour_app.employee:
                 self.update_show_time()
 
-
     def init_app(self):
         self.clock_on_app.populate_emp_list(self.model.get_all_emp())
         self.display_timesheet_grid(self.model.get_current_date(), 7)
@@ -73,15 +71,31 @@ class Controller:
 
     # BUNDLE OF EVENT TRIGGERS FROM THE DIFFERENT APP VIEWS.
     def event_trigger(self):
+        # NOTEBOOK EVENTS
+        self.nb.bind("<<NotebookTabChanged>>", self._on_tab_changed)
+        # CLOCK APP EVENTS
         self.clock_on_app.combobox.bind("<<ComboboxSelected>>", self.emp_select)
-        self.clock_on_app.on_button.bind("<Button-1>", self.clock_on)
-        self.clock_on_app.off_button.bind("<Button-1>", self.clock_off)
+        self.clock_on_app.on_button.bind("<ButtonRelease-1>", self.clock_on)
+        self.clock_on_app.off_button.bind("<ButtonRelease-1>", self.clock_off)
+        # ADMIN APP EVENTS
         self.alter_hour_app.emp_combobox.bind("<<ComboboxSelected>>", self.alter_emp_select)
         self.alter_hour_app.calendar.bind("<<DateEntrySelected>>", self.alter_date_select)
-        self.alter_hour_app.on_button.bind("<Button-1>", self.alter_on)
-        self.alter_hour_app.off_button.bind("<Button-1>", self.alter_off)
+        self.alter_hour_app.on_button.bind("<ButtonRelease-1>", self.alter_on)
+        self.alter_hour_app.off_button.bind("<ButtonRelease-1>", self.alter_off)
+        self.alter_hour_app.create_emp_button.bind("<ButtonRelease-1>", self.create_emp)
+        # TIME SHEET EVENTS
         self.timesheet_app.calendar.bind("<<DateEntrySelected>>", self.date_select)
-        self.nb.bind("<<NotebookTabChanged>>", self._on_tab_changed)
+
+    # CREATE EMPLOYEE
+    def create_emp(self, event):
+        new_emp = self.alter_hour_app.new_employee()
+        if new_emp:
+            self.model.create_new_emp(new_emp)
+            self.clock_on_app.populate_emp_list(self.model.get_all_emp())
+            self.alter_hour_app.populate_emp_list(self.model.get_all_emp())
+            self.display_timesheet_grid(self.model.get_current_date(), 7)
+        return 'break'
+
 
     # EMPLOYEE LIST EVENT CALL FOR WHEN AN EMPLOYEE IS SELECTED FROM THE LIST
     def alter_emp_select(self, event):

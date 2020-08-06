@@ -28,7 +28,7 @@ class ClockOn(FrameTemplate):
         self.on_label = tk.Label(self.parent_frame)
         self.off_label = tk.Label(self.parent_frame)
         self.on_label.grid(row=2, column=1, sticky='nsew')
-        self.off_label.grid(row=3, column=1)
+        self.off_label.grid(row=3, column=1, sticky='nsew')
 
     def populate_emp_list(self, emp_list):
         self.combobox['values'] = emp_list
