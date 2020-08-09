@@ -27,8 +27,8 @@ Project is created with:
 ## Setup
 To run this project, install it locally by git cloning https://github.com/baileo02/Clock_timestamp_2.git or 
 alternatively by downloading the ZIP. <br/>
-Open the project and run clock_timestamp_controller.py, this will create a new local database file when run for 
-the first time. <br/>
+You will need to run 'pipenv install' to install the packages required. If you don't have pipenv, install it by 'pip install pipenv' <br/>
+Then run 'pipenv run start' <br/>
 Default access password for admin control is: 'admin' and this can be changed in alter_hour_page.py. <br/>
 
 <a name="features"></a>
