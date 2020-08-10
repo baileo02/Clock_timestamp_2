@@ -295,4 +295,3 @@ class Controller:
 
 if __name__ == '__main__':
     c = Controller()
-    print(tk.TkVersion)
