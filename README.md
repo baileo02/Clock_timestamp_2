@@ -21,7 +21,7 @@ of the day.
 Project is created with:
 * Python 3.8
 * Sqlite3 
-* Tkinter 3.8.5
+* Tkinter 8.6
 
 <a name="setup"></a>
 ## Setup
@@ -46,4 +46,4 @@ Currently, all data is stored locally but for future iterations, I plan to imple
 ## Sources 
 http://effbot.org/tkinterbook/ - For documentation and examples on tkinter's GUI <br/>
 https://docs.python.org/3/library/ - Standard Python reference and guides <br/>
-https://stackoverflow.com/ - Helped immensely in guiding me to solutions 
+https://stackoverflow.com/ - Helped immensely in guiding me to problem solutions

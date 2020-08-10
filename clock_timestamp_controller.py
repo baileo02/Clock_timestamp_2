@@ -198,53 +198,6 @@ class Controller:
             messagebox.showinfo('Attention', 'No Employee seleceted')
             return 'break'
 
-
-
-    # SETTING OF TIME RECORD
-    # def alter_time(self, time_type):
-    #     emp_id = self.model.get_id_by_name(self.alter_hour_app.employee)
-    #     clock_off_time = self.model.get_time('clock_off', emp_id, self.alter_hour_app.date_value)
-    #     clock_on_time = self.model.get_time('clock_on', emp_id, self.alter_hour_app.date_value)
-    #     try:
-    #         # Error if user not selected
-    #         if self.alter_hour_app.employee:
-    #             if self.alter_hour_app.ask_password():
-    #                 self.alter_hour_app.alter_time()
-    #                 if self.alter_hour_app.time_value:
-    #                     if clock_on_time or clock_off_time:
-    #                         if time_type == 'clock_on':
-    #                             if clock_off_time:
-    #                                 if self.alter_hour_app.time_value <= clock_off_time:
-    #                                     self.model.set_time_record(time_type, emp_id, self.alter_hour_app.date_value, self.alter_hour_app.time_value)
-    #                                 else:
-    #                                     raise excep.IllogicalTime
-    #                             else:
-    #                                 self.model.set_time_record(time_type, emp_id, self.alter_hour_app.date_value, self.alter_hour_app.time_value)
-    #                         elif time_type == 'clock_off':
-    #                             if clock_on_time:
-    #                                 if clock_on_time <= self.alter_hour_app.time_value:
-    #                                     self.model.set_time_record(time_type, emp_id, self.alter_hour_app.date_value, self.alter_hour_app.time_value)
-    #                                 else:
-    #                                     raise excep.IllogicalTime
-    #                             else:
-    #                                 self.model.set_time_record(time_type, emp_id, self.alter_hour_app.date_value, self.alter_hour_app.time_value)
-    #                     else:
-    #                         self.model.create_time_record(time_type, emp_id, self.alter_hour_app.date_value, self.alter_hour_app.time_value)
-    #                     self.update_show_time()
-    #         else:
-    #             raise excep.NoEmployeeSelected
-    #     except excep.IncorrectPassword:
-    #         messagebox.showerror('Access denied', 'Incorrect password')
-    #         return 'break'
-    #
-    #     except excep.IllogicalTime:
-    #         messagebox.showinfo('Attention', 'Clock ON time must be less than Clock OFF time')
-    #         return 'break'
-    #
-    #     except excep.NoEmployeeSelected:
-    #         messagebox.showinfo('Attention', 'No Employee seleceted')
-    #         return 'break'
-
     # DATE SELECTOR FOR TIME SHEET APP EVENT CALL
     def date_select(self, event):
         self.timesheet_app.clear_grid()
@@ -254,7 +207,6 @@ class Controller:
     def break_time_select(self, event):
         self.timesheet_app.clear_grid()
         self.display_timesheet_grid(self.timesheet_app.calendar.get(), 7)
-
 
     def display_timesheet_grid(self, selected_date, days):
         for row, emp in enumerate(self.model.get_all_emp(), 1):
@@ -274,9 +226,6 @@ class Controller:
                 break_time = self.model.get_num_days_worked(dates, emp_id) * self.timesheet_app.break_time_entry.get()
                 self.timesheet_app.init_grid_frame(row, days + 2,
                                                    ex_break_time(self.model.get_total_hours(emp_id, dates), convert_min_overflow([0, int(break_time)])))
-
-
-
 
     def clock_on(self, event):
         try:
@@ -346,3 +295,4 @@ class Controller:
 
 if __name__ == '__main__':
     c = Controller()
+    print(tk.TkVersion)

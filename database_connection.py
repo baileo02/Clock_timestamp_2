@@ -1,15 +1,21 @@
 import sqlite3
 import exception_utility as excep
+# This module deals with retrieving database data. All queries are executed here where the model will 'package' it
+# in the clock_timestamp_model module.
 
 class Database:
-
+    """
+    db_file: The database file that will be used.
+    """
     def __init__(self, db_file):
         self.db_file = db_file
+        # CURSOR FOR THE CURRENT DATABASE
         self.acursor = None
-
+        # REFERS TO THE DATABASE CONNECTION
         self.db = None
         self.create_connection(db_file)
 
+    # CONNECTS TO THE DATABASE GIVEN THE DB_FILE
     def create_connection(self, db_file):
         try:
             self.db = sqlite3.connect(db_file)
@@ -19,6 +25,7 @@ class Database:
         except sqlite3.Error as e:
             print(e)
 
+    # INITIALIZES THE DATABASE IF IT DOESN'T EXIST
     def create_tables(self):
         if self.acursor:
             self.acursor.execute(
@@ -28,7 +35,9 @@ class Database:
                 'CREATE TABLE IF NOT EXISTS timestamp (clock_on TEXT, clock_off TEXT, emp_id INTEGER NOT NULL,'
                 ' date TEXT, record_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE)')
 
-    # BACKEND FUNCTIONS
+    # BACKEND FUNCTIONS #
+
+    # RETURN EMPLOYEE NAME GIVEN ID
     def get_name_by_id(self, _id):
         emp_name = self.acursor.execute('SELECT name FROM employee WHERE emp_id = ?', (_id,)).fetchone()
         if emp_name:
@@ -36,6 +45,7 @@ class Database:
         else:
             return None
 
+    # GET EMPLOYEE ID GIVEN NAME
     def get_id_by_name(self, _name):
         emp_id = self.acursor.execute('SELECT emp_id FROM employee WHERE name = ?', (_name,)).fetchone()
         if emp_id:
@@ -43,10 +53,11 @@ class Database:
         else:
             return None
 
+    # GET EMPLOYEE CLOCK ON OR OFF.
     def get_time(self, time_type, _id, _date):
         """
         time_type: The column of time you wish to retrieve - clock_on/clock_off
-        _id: emp_id
+        _id: emp_id in the database column
         _date: The date in the format %Y-%m-%d
         """
 
@@ -57,6 +68,7 @@ class Database:
         else:
             return None
 
+    # GET LATEST DATE THE EMPLOYEE CLOCKED ON
     def get_last_clock_in_date(self, _id):
         latest_date = self.acursor.execute('SELECT MAX(date) FROM timestamp WHERE emp_id=?', (_id,)).fetchone()
         return latest_date[0]
