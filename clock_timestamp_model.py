@@ -2,7 +2,7 @@
 # Does NOT communicate with the view, the controller does that
 # Thus the code should be mainly producing outputs to specific database items.
 
-from database_connection import Database
+from db_backend import Database
 from datetime_utility import TimeCalculation, convert_min_overflow
 from datetime import datetime
 import exception_utility as excep
@@ -11,7 +11,7 @@ import exception_utility as excep
 class Model:
 
     def __init__(self):
-        self.db = Database('timesheet.db')
+        self.db = Database()
 
     @staticmethod
     def get_current_date():
@@ -31,11 +31,11 @@ class Model:
     def get_time(self, time_type, _id, _date):
         return self.db.get_time(time_type, _id, _date)
 
-    def get_latest_emp_clock(self, _id):
-        return self.db.get_last_clock_in_date(_id)
-
-    def get_num_of_emp(self):
-        return self.db.get_num_of_emp()
+    # def get_latest_emp_clock(self, _id):
+    #     return self.db.get_last_clock_in_date(_id)
+    #
+    # def get_num_of_emp(self):
+    #     return self.db.get_num_of_emp()
 
     def get_all_emp(self):
         return self.db.get_all_emp()
