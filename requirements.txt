@@ -1,1 +1,5 @@
+mysql-connector-python==8.0.21
+python-dotenv==0.14.0
+pytz==2020.1
 tkcalendar==1.6.1
+
