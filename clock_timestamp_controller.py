@@ -8,7 +8,7 @@ from alter_hour_page import AlterHour
 import exception_utility as excep
 from datetime_utility import week_dates
 from datetime_utility import convert_min_overflow, ex_break_time
-from dotenv import load_dotenv
+import settings
 
 
 class Controller:
