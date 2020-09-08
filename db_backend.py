@@ -1,15 +1,14 @@
 import mysql.connector as con
 import exception_utility as excep
-import os
 
 class Database:
     def __init__(self):
         try:
             self.mydb = con.connect(
-                host=os.getenv('db_host'),
-                user=os.getenv('db_user'),
-                password=os.getenv('db_pass'),
-                database=os.getenv('database'))
+                host="timestamp-db.cpnrynyjphln.ap-southeast-2.rds.amazonaws.com",
+                user="admin",
+                password="password",
+                database="timestamp_DB")
 
             self.myCursor = self.mydb.cursor()
             self.create_tables()
