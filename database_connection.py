@@ -108,6 +108,4 @@ class Database:
             raise excep.RecordNotFound(f'Record for employeeID: {_id} for this date: {_date} does not exist')
 
 if __name__ == '__main__':
-    db = Database('timesheet.db')
-    a = db.get_all_emp()
-    print(a)
+    database = Database('timesheet.db')
