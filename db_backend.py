@@ -95,8 +95,20 @@ class Database:
         self.myCursor.execute('SELECT name FROM employee')
         return [row[0] for row in self.myCursor if row[0]]
 
+    def get_hours_worked(self, emp_id, date):
+        self.myCursor.execute(f"SELECT TIMEDIFF(clock_off, clock_on) FROM timestamp WHERE (emp_id = %s AND date = %s) ", (emp_id, date))
+        time = self.myCursor.fetchone()
+        if time is None:
+            return None
+        elif time[0] is None:
+            return 'Amend'
+        else:
+            return divmod(time[0].seconds, 3600)
+
 
 
 if __name__ == '__main__':
-
+    import settings
     db = Database()
+    t = db.get_hours_worked(1, '2020-09-10')
+    print(t)

@@ -48,18 +48,14 @@ class Model:
         return days_worked
 
     def get_hours_worked(self, _id, _date:str):
-        clock_off_time = TimeCalculation(self.db.get_time('clock_off', _id, _date))
-        clock_on_time = TimeCalculation(self.db.get_time('clock_on', _id, _date))
-        # print(clock_on_time.time)
-        # print(type(clock_on_time.time))
-        try:
-            if clock_on_time.time and clock_off_time.time:
-                time_worked = clock_off_time - clock_on_time
-                return time_worked
-            elif clock_on_time.time and not clock_off_time.time:
-                raise excep.MissingClockOff
-        except excep.MissingClockOff:
+        time = self.db.get_hours_worked(_id, _date)
+        if time == 'Amend':
             return 'Amend'
+        elif not time:
+            return None
+        else:
+            hr, seconds = time
+            return (hr, seconds//60)
 
     # GETS ID AND A LIST OF DATES AND RETURNS THE TOTAL HOURS, MIN
     # hours_worked input must be a tuple with two integers e.g. (6,30)
@@ -82,3 +78,6 @@ class Model:
     def set_time_record(self, time_type, _id, _date, time_value):
         self.db.update_time_record(time_type, _id, _date, time_value)
 
+if __name__ == '__main__':
+    import settings
+    m = Model()

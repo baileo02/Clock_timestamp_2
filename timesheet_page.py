@@ -27,9 +27,9 @@ class TimeSheet(FrameTemplate):
         self.break_time_entry.set(30)
 
         # INITIALIZE GRID-CELL FRAMES
-    def init_grid_frame(self, num_emp, days, cell_data):
+    def init_grid_frame(self, row, column, cell_data):
         frame = tk.Frame(self.time_grid_frame, borderwidth=1, relief='solid')
-        frame.grid(row=num_emp, column=days, sticky='nsew')
+        frame.grid(row=row, column=column, sticky='nsew')
         if cell_data is None:
             label = tk.Label(frame)
         else:

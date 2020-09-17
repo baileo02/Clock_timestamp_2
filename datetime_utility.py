@@ -22,7 +22,7 @@ class TimeCalculation:
             return None
 
 # Converts minute overflow to hours
-def convert_min_overflow(hour_min_list: list):
+def convert_min_overflow(hour_min_list):
     if hour_min_list:
         hour_min_list[0] += (hour_min_list[1] // 60)
         hour_min_list[1] = (hour_min_list[1] % 60)
@@ -34,7 +34,7 @@ def ex_break_time(total_hours, break_hours):
     if total_hours and break_hours:
         total_break_hours = total_hours[0] - break_hours[0]
         total_break_minutes = total_hours[1] - break_hours[1]
-
+        print(total_break_hours, total_break_minutes)
         if total_break_hours > 0:
             return convert_min_overflow([total_break_hours, total_break_minutes])
         else:
