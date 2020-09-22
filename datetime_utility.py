@@ -54,3 +54,10 @@ def week_dates(initial_date, days:int):
         temp_list.append(temp)
     return [datetime.strftime(date, '%Y-%m-%d') for date in temp_list]
 
+# TAKES INITIAL DATE AND RETURNS THE DATE OF A WEEK LATER
+def week_date(initial_date, days:int):
+    temp = datetime.strptime(initial_date, '%Y-%m-%d')
+    temp += timedelta(days=days)
+    return temp.strftime('%Y-%m-%d')
+
+

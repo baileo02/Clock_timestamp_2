@@ -5,10 +5,12 @@ from tkinter import ttk, messagebox
 from timesheet_page import TimeSheet
 from alter_hour_page import AlterHour
 import exception_utility as excep
-from datetime_utility import week_dates
+from datetime_utility import week_date, week_dates
 from datetime_utility import convert_min_overflow, ex_break_time
 import settings
 import numpy as np
+from datetime import datetime
+from datetime import timedelta
 
 class Controller:
 
@@ -46,12 +48,12 @@ class Controller:
         # gets the widget clicked and configures the height and width.
         event.widget.update_idletasks()
         tab = event.widget.nametowidget(event.widget.select())
-        event.widget.configure(height=tab.winfo_reqheight(), width=tab.winfo_reqwidth()+30)
 
+        event.widget.configure(height=tab.winfo_reqheight(), width=tab.winfo_reqwidth()+30)
         # UPDATES EACH TAB'S CONTENT WHEN CLICKED ON
         selected_tab = event.widget.tab(event.widget.select(), 'text')
-        if selected_tab == 'Time Sheet':
-            self.display_timesheet_grid(self.timesheet_app.calendar.get(), 7)
+        # if selected_tab == 'Time Sheet':
+        #     self.display_timesheet_grid(self.timesheet_app.calendar.get(), week_date(self.timesheet_app.calendar.get(),7))
         if selected_tab == 'Alter hours':
             if self.alter_hour_app.employee:
                 self.update_show_time()
@@ -69,10 +71,10 @@ class Controller:
         self.alter_hour_app.create_emp_button.bind("<ButtonRelease-1>", self.create_emp)
         # TIME SHEET EVENTS
         self.timesheet_app.calendar.bind("<<DateEntrySelected>>", self.date_select)
-        self.timesheet_app.break_time_entry.bind("<<ComboboxSelected>>", self.break_time_select)
+        # self.timesheet_app.break_time_entry.bind("<<ComboboxSelected>>", self.break_time_select)
 
     def init_app(self):
-        self.display_timesheet_grid(self.model.get_current_date(), 7)
+        self.display_timesheet_grid(self.model.get_current_date(), week_date(self.model.get_current_date(), 6))
         self.alter_hour_app.populate_emp_list(self.model.get_all_emp())
 
         # CREATE EMPLOYEE
@@ -133,7 +135,6 @@ class Controller:
         emp_id = self.model.get_id_by_name(self.alter_hour_app.employee)
         clock_off_time = self.model.get_time('clock_off', emp_id, self.alter_hour_app.date_value)
         clock_on_time = self.model.get_time('clock_on', emp_id, self.alter_hour_app.date_value)
-
         try:
             # Throw error if user not selected
             if not self.alter_hour_app.employee:
@@ -190,44 +191,84 @@ class Controller:
     def date_select(self, event):
         self.timesheet_app.clear_grid()
         selected_date = event.widget.get()
-        self.display_timesheet_grid(selected_date, 7)
 
-    def break_time_select(self, event):
-        self.timesheet_app.clear_grid()
-        self.display_timesheet_grid(self.timesheet_app.calendar.get(), 7)
+        self.display_timesheet_grid(selected_date, week_date(selected_date, 6))
+        event.widget.update_idletasks()
+        self.nb.configure(height=self.timesheet_frame.winfo_reqheight(),
+                          width=self.timesheet_frame.winfo_reqwidth()+30)
 
-    def display_timesheet_grid(self, selected_date, days):
-        emp_list = self.model.get_all_emp()
-        for row, emp in enumerate(emp_list, 1):
-            emp_id = self.model.get_id_by_name(emp)
-            dates = []
-            days_worked = 0
-            total_hours = (0,0)
+    #
+    # def break_time_select(self, event):
+    #     self.timesheet_app.clear_grid()
+    #     self.display_timesheet_grid(self.timesheet_app.calendar.get(), week_date(self.timesheet_app.calendar.get(),7))
+
+    def display_timesheet_grid(self, start_date, end_date):
+        data = self.model.joined_date_table(start_date, end_date)
+        emp_set = {record[1] for record in data}
+        date_headers = week_dates(start_date, 7)
+
+        for row, emp in enumerate(emp_set, 1):
             self.timesheet_app.init_grid_frame(row, 0, emp)
-            for column, date in enumerate(week_dates(selected_date, days)):
-                hours_worked = self.model.get_hours_worked(emp_id, date)
-                self.timesheet_app.init_grid_frame(0, column + 1, date)
-                if hours_worked == 'Amend':
-                    self.timesheet_app.init_grid_frame(row, column + 1, 'Amend')
-                elif hours_worked:
-                    total_hours = list(np.sum((hours_worked, total_hours), axis=0))
-                    days_worked += 1
-                self.timesheet_app.init_grid_frame(row, column + 1, hours_worked)
-                dates.append(date)
-            self.timesheet_app.init_grid_frame(0, days + 1, 'Total')
-            self.timesheet_app.init_grid_frame(0, days + 2, 'Break Total')
-            self.timesheet_app.init_grid_frame(row, days + 1, convert_min_overflow(list(total_hours)))
-            self.timesheet_app.init_grid_frame(row, days + 2, days_worked)
-            #todo problem with the conversion (exbreaktime)
+            emp_records = []
+            total_hours = 0
+            for records in data:     # Loop through the joined data table
+                if records[1] == emp:    # For each employee
+                    emp_records.append((emp, records[2], records[3]))   # Append work date and hours to emp_records
+
+            for column, date in enumerate(date_headers):
+                self.timesheet_app.init_grid_frame(0, column+1, date)  # Create the column headers
+                self.timesheet_app.init_grid_frame(row, column+1)   # Create timetable layout (grids)
+
+            for record in emp_records:
+                date_column = record[1].day - datetime.strptime(start_date, '%Y-%m-%d').day     # Calculate column index
+                hours_worked = record[2].seconds//60    # Get hours worked
+                total_hours += hours_worked
+                self.timesheet_app.init_grid_frame(row, date_column+1, hours_worked)    # Populate it according to column and row index
+
+            self.timesheet_app.init_grid_frame(0, len(date_headers)+1, 'Total Hours')   # Create Total hour header
+            self.timesheet_app.init_grid_frame(row, len(date_headers)+1, total_hours)   # Populate total hours
 
 
-            # if days_worked > 0:
-            #     break_time = days_worked * int(self.timesheet_app.break_time_entry.get())
-            #     print(break_time, emp, date)
-            #     self.timesheet_app.init_grid_frame(row, days + 2,
-            #                                        ex_break_time(total_hours, convert_min_overflow([0, break_time])))
+
+
+
+        ##todo got the data need to correctly place it in each grid cell.
+
+
+
+
+
+
+# def display_timesheet_grid(self, selected_date, days):
+    #     emp_list = self.model.get_all_emp()
+    #     print(emp_list)
+    #     for row, emp in enumerate(emp_list, 1):
+    #         emp_id = self.model.get_id_by_name(emp)
+    #         dates = []
+    #         days_worked = 0
+    #         total_hours = (0, 0)
+    #         self.timesheet_app.init_grid_frame(row, 0, emp)
+    #         for column, date in enumerate(week_dates(selected_date, days)):
+    #             hours_worked = self.model.get_hours_worked(emp_id, date)
+    #             self.timesheet_app.init_grid_frame(0, column + 1, date)
+    #             if hours_worked == 'Amend':
+    #                 self.timesheet_app.init_grid_frame(row, column + 1, 'Amend')
+    #             elif hours_worked:
+    #                 total_hours = list(np.sum((hours_worked, total_hours), axis=0))
+    #                 days_worked += 1
+    #             self.timesheet_app.init_grid_frame(row, column + 1, hours_worked)
+    #             dates.append(date)
+    #         self.timesheet_app.init_grid_frame(0, days + 1, 'Total')
+    #         self.timesheet_app.init_grid_frame(0, days + 2, 'Break Total')
+    #         self.timesheet_app.init_grid_frame(row, days + 1, convert_min_overflow(list(total_hours)))
+    #         self.timesheet_app.init_grid_frame(row, days + 2, days_worked)
+    #         #todo problem with the conversion (exbreaktime)
+    #
+    #         # if days_worked > 0:
+    #         #     break_time = days_worked * int(self.timesheet_app.break_time_entry.get())
+    #         #     print(break_time, emp, date)
+    #         #     self.timesheet_app.init_grid_frame(row, days + 2,
+    #         #                                        ex_break_time(total_hours, convert_min_overflow([0, break_time])))
 
 if __name__ == '__main__':
     c = Controller()
-    ## todo fix up line 226 ex_break_time
-

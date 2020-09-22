@@ -95,6 +95,11 @@ class Database:
         self.myCursor.execute('SELECT name FROM employee')
         return [row[0] for row in self.myCursor if row[0]]
 
+    def get_emps(self):
+        self.myCursor.execute('SELECT name, emp_id FROM employee')
+        return self.myCursor.fetchall()
+
+
     def get_hours_worked(self, emp_id, date):
         self.myCursor.execute(f"SELECT TIMEDIFF(clock_off, clock_on) FROM timestamp WHERE (emp_id = %s AND date = %s) ", (emp_id, date))
         time = self.myCursor.fetchone()
@@ -105,10 +110,17 @@ class Database:
         else:
             return divmod(time[0].seconds, 3600)
 
+    def get_joined_tables(self, start_date, end_date):
+        self.myCursor.execute("SELECT employee.emp_id, employee.name, timestamp.date, TIMEDIFF( timestamp.clock_off, timestamp.clock_on) "
+                              "FROM employee "
+                              "LEFT OUTER JOIN timestamp ON employee.emp_id=timestamp.emp_id "
+                              "WHERE timestamp.date BETWEEN %s AND %s;", (start_date, end_date))
+        return self.myCursor.fetchall()
 
 
 if __name__ == '__main__':
     import settings
     db = Database()
-    t = db.get_hours_worked(1, '2020-09-10')
-    print(t)
+    print(db.get_joined_tables('2020-09-13', '2020-09-17'))
+    # print(db.get_joined_tables('2020-09-13', '2020-09-17'))
+    # print(db.get_joined_tables('2020-09-13', '2020-09-17'))

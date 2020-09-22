@@ -27,31 +27,19 @@ class TimeSheet(FrameTemplate):
         self.break_time_entry.set(30)
 
         # INITIALIZE GRID-CELL FRAMES
-    def init_grid_frame(self, row, column, cell_data):
+    def init_grid_frame(self, row, column, cell_data=None):
         frame = tk.Frame(self.time_grid_frame, borderwidth=1, relief='solid')
         frame.grid(row=row, column=column, sticky='nsew')
         if cell_data is None:
             label = tk.Label(frame)
+            label.grid()
         else:
             label = tk.Label(frame, text=cell_data)
-        label.grid()
+            label.grid()
 
     def clear_grid(self):
         self.time_grid_frame.destroy()
         self.time_grid_frame = tk.Frame(self.parent_frame)
         self.time_grid_frame.grid(row=2)
 
-    # def display_updated_timesheet(self, row, column, hours_worked):
-    #         frame = tk.Frame(self.time_grid_frame, bg='blue')
-    #         frame.grid(row=row, column=column)
-    #         label = tk.Label(frame, text=hours_worked)
-    #         label.grid()
-    #
 
-
-
-    # requires date selected
-    # needs all employees
-    # needs employee times based on date
-    # needs hours worked
-    # needs total hours

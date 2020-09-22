@@ -37,8 +37,7 @@ class Model:
     # def get_num_of_emp(self):
     #     return self.db.get_num_of_emp()
 
-    def get_all_emp(self):
-        return self.db.get_all_emp()
+
 
     def get_num_days_worked(self, dates, _id):
         days_worked = 0
@@ -78,6 +77,30 @@ class Model:
     def set_time_record(self, time_type, _id, _date, time_value):
         self.db.update_time_record(time_type, _id, _date, time_value)
 
+    def joined_date_table(self, start_date, end_date):
+        return self.db.get_joined_tables(start_date, end_date)
+
+    def get_all_emp(self):
+        return self.db.get_all_emp()
+
 if __name__ == '__main__':
     import settings
     m = Model()
+    data = sorted(m.joined_date_table('2020-09-13', '2020-09-17'))
+    # print(data)
+
+    names = set()
+    for record in data:
+        names.add(record[1])
+    print(names)
+
+
+
+
+
+
+
+
+
+
+
