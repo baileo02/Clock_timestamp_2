@@ -230,45 +230,5 @@ class Controller:
 
 
 
-
-
-        ##todo got the data need to correctly place it in each grid cell.
-
-
-
-
-
-
-# def display_timesheet_grid(self, selected_date, days):
-    #     emp_list = self.model.get_all_emp()
-    #     print(emp_list)
-    #     for row, emp in enumerate(emp_list, 1):
-    #         emp_id = self.model.get_id_by_name(emp)
-    #         dates = []
-    #         days_worked = 0
-    #         total_hours = (0, 0)
-    #         self.timesheet_app.init_grid_frame(row, 0, emp)
-    #         for column, date in enumerate(week_dates(selected_date, days)):
-    #             hours_worked = self.model.get_hours_worked(emp_id, date)
-    #             self.timesheet_app.init_grid_frame(0, column + 1, date)
-    #             if hours_worked == 'Amend':
-    #                 self.timesheet_app.init_grid_frame(row, column + 1, 'Amend')
-    #             elif hours_worked:
-    #                 total_hours = list(np.sum((hours_worked, total_hours), axis=0))
-    #                 days_worked += 1
-    #             self.timesheet_app.init_grid_frame(row, column + 1, hours_worked)
-    #             dates.append(date)
-    #         self.timesheet_app.init_grid_frame(0, days + 1, 'Total')
-    #         self.timesheet_app.init_grid_frame(0, days + 2, 'Break Total')
-    #         self.timesheet_app.init_grid_frame(row, days + 1, convert_min_overflow(list(total_hours)))
-    #         self.timesheet_app.init_grid_frame(row, days + 2, days_worked)
-    #         #todo problem with the conversion (exbreaktime)
-    #
-    #         # if days_worked > 0:
-    #         #     break_time = days_worked * int(self.timesheet_app.break_time_entry.get())
-    #         #     print(break_time, emp, date)
-    #         #     self.timesheet_app.init_grid_frame(row, days + 2,
-    #         #                                        ex_break_time(total_hours, convert_min_overflow([0, break_time])))
-
 if __name__ == '__main__':
     c = Controller()
